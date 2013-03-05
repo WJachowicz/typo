@@ -23,6 +23,7 @@ require 'uri'
 require 'cgi'
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "support", "paths"))
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "support", "selectors"))
+require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "spec", "factories"))
 
 module WithinHelpers
   def with_scope(locator)
@@ -43,15 +44,25 @@ Given /^the blog is set up$/ do
                 :state => 'active'})
 end
 
-And /^I am logged into the admin panel$/ do
+And /^I am logged into the (.+) panel$/ do |user_name|
   visit '/accounts/login'
-  fill_in 'user_login', :with => 'admin'
+  fill_in 'user_login', :with => user_name
   fill_in 'user_password', :with => 'aaaaaaaa'
   click_button 'Login'
   if page.respond_to? :should
     page.should have_content('Login successful')
   else
     assert page.has_content?('Login successful')
+  end
+end
+
+Given /^non\-admin user is created$/ do
+  user = FactoryGirl.create(:user, :login => "user", :password => "aaaaaaaa", :profile_id => 2)
+end
+
+Given /^(\d+) articles are created$/ do |num|
+  num.to_i.times do |i|
+    article = FactoryGirl.create(:article, :title => "Title #{i}", :body => "article numero #{i}")
   end
 end
 
