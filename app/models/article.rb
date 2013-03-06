@@ -425,8 +425,8 @@ class Article < Content
     self.comments << merge_article.comments
     self.save
 
-    # merge_article = Article.find(article_id)
-    # merge_article.destroy
+    merge_article = Article.find(article_id)
+    merge_article.destroy
 
   end
 
