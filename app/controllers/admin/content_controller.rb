@@ -38,8 +38,20 @@ class Admin::ContentController < Admin::BaseController
   end
 
   def merge
-    flash[:notice] = "Articles merged."
-    redirect_to  "/admin/content/"
+
+    if params[:id] == params[:merge_with]
+      flash[:notice] = "Cannot merge the same articles"
+      redirect_to  :action => :index
+    elsif !Article.find_by_id(params[:merge_with])
+      flash[:notice] = "Article to merge does not exists"
+      redirect_to  :action => :index
+    else
+      @article = Article.find(params[:id])
+      @article.merge_with!(params[:merge_with])
+      flash[:notice] = "Articles merged."
+      redirect_to  :action => :edit, :id => params[:id]
+    end
+    
   end
 
   def destroy

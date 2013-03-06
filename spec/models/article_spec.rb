@@ -645,7 +645,7 @@ describe Article do
     end
 
     it "contains the text from both articles" do
-      @first_article.body.should eq "article numero 1 article numero 2"
+      @first_article.body.should eq "article numero 1article numero 2"
     end
 
     it "has title from one of the articles" do

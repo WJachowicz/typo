@@ -21,20 +21,6 @@ class Content < ActiveRecord::Base
       notify_users.target = collection
     end
   end
-
-  def merge_with!(article_id)
-    merge_article = Article.find(article_id)
-    return if self.id == article_id or merge_article.nil?
-
-    self.body << " #{merge_article.body}"
-
-    self.comments << merge_article.comments
-    self.save
-
-    merge_article = Article.find(article_id)
-    merge_article.destroy
-
-  end
     
   has_many :triggers, :as => :pending_item, :dependent => :delete_all
 
