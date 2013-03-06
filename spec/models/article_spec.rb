@@ -630,5 +630,41 @@ describe Article do
     end
 
   end
+
+  describe "merge of two articles" do
+    before :each do
+      henri = Factory(:user, :login => 'henri', :notify_on_new_articles => true)
+      alice = Factory(:user, :login => 'alice', :notify_on_new_articles => true)
+
+      @first_article = Factory.create(:article, :title => "Title 1", :body => "article numero 1", :user => henri)
+      @first_article_comment = Factory.create(:comment, :body => "Comment 1", :article => @first_article)
+
+      @second_article = Factory.create(:article, :title => "Title 2", :body => "article numero 2", :user => alice)
+      @second_article_comment = Factory.create(:comment, :body => "Comment 2", :article => @second_article)
+      @first_article.merge_with!(@second_article.id)
+    end
+
+    it "contains the text from both articles" do
+      @first_article.body.should eq "article numero 1 article numero 2"
+    end
+
+    it "has title from one of the articles" do
+      @first_article.title.should  eq "Title 1"
+    end
+
+    it "has 2 comments" do
+      @first_article.comments.length.should == 2
+    end
+
+    it "has comments from both articles" do
+      @first_article.comments[0].body.should eq "Comment 1"
+      @first_article.comments[1].body.should eq "Comment 2"
+    end
+
+    it "has author from one of the articles" do
+      @first_article.user.login.should eq "henri"
+    end
+
+  end
 end
 

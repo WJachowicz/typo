@@ -22,6 +22,20 @@ class Content < ActiveRecord::Base
     end
   end
 
+  def merge_with!(article_id)
+    merge_article = Article.find(article_id)
+    return if self.id == article_id or merge_article.nil?
+
+    self.body << " #{merge_article.body}"
+
+    self.comments << merge_article.comments
+    self.save
+
+    merge_article = Article.find(article_id)
+    merge_article.destroy
+
+  end
+    
   has_many :triggers, :as => :pending_item, :dependent => :delete_all
 
   scope :published_at_like, lambda {|date_at| {:conditions => {
@@ -290,6 +304,7 @@ class Object
     TextFilter.find_by_name(self.to_s) || TextFilter.find_by_name('none')
   end
 end
+
 
 class ContentTextHelpers
   include ActionView::Helpers::UrlHelper

@@ -28,7 +28,11 @@ Feature: Merge Articles
 	
 
 	Scenario: When articles are merged, the merged article should contain the text of both previous articles
-
+		Given articles are merged
+		When I am on article 1 page
+		Then I should see "article numero 1"
+		And I should see "article numero 2"
+		
 	Scenario: When articles are merged, the merged article should have one author (either one of the authors of the two original articles)
 
 	Scenario: Comments on each of the two original articles need to all carry over and point to the new, merged article.
